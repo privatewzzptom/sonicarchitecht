@@ -110,7 +110,7 @@ const App: React.FC = () => {
       const token = localStorage.getItem('shopify_customer_token');
       if (token) {
         try {
-          const customer = await ShopifyService.getCustomer(token);
+          const customer = await ShopifyService.getCustomerDetails(token);
           if (customer) {
             setCustomerData(customer);
             setIsLoggedIn(true);
