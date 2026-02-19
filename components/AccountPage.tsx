@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -70,7 +71,7 @@ const AccountPage: React.FC<AccountPageProps> = ({ isLoggedIn, customerData, onL
           setOrdersLoading(true);
           setOrdersError('');
           try {
-            const token = localStorage.getItem('customerToken');
+            const token = localStorage.getItem('shopify_customer_token');
             if (!token) throw new Error('No token found');
 
             const ordersData = await ShopifyService.getCustomerOrders(token);
@@ -78,9 +79,9 @@ const AccountPage: React.FC<AccountPageProps> = ({ isLoggedIn, customerData, onL
           } catch (err: any) {
             if (err.message?.includes('expired') || err.message?.includes('AccessToken')) {
               try {
-                const token = localStorage.getItem('customerToken');
+                const token = localStorage.getItem('shopify_customer_token');
                 const renewed = await ShopifyService.renewToken(token);
-                localStorage.setItem('customerToken', renewed.accessToken);
+                localStorage.setItem('shopify_customer_token', renewed.accessToken);
                 const ordersData = await ShopifyService.getCustomerOrders(renewed.accessToken);
                 setOrders(ordersData);
               } catch (renewErr: any) {
@@ -108,7 +109,7 @@ const AccountPage: React.FC<AccountPageProps> = ({ isLoggedIn, customerData, onL
     try {
       const auth = await ShopifyService.login(email, password);
       const customer = await ShopifyService.getCustomerDetails(auth.accessToken);
-      localStorage.setItem('customerToken', auth.accessToken);
+      localStorage.setItem('shopify_customer_token', auth.accessToken);
       onLogin(auth.accessToken, customer);
       setMessage('Successfully logged in!');
     } catch (err: any) {
@@ -128,7 +129,7 @@ const AccountPage: React.FC<AccountPageProps> = ({ isLoggedIn, customerData, onL
       await ShopifyService.register(email, password, firstName, lastName);
       const auth = await ShopifyService.login(email, password);
       const customer = await ShopifyService.getCustomerDetails(auth.accessToken);
-      localStorage.setItem('customerToken', auth.accessToken);
+      localStorage.setItem('shopify_customer_token', auth.accessToken);
       onLogin(auth.accessToken, customer);
       setMessage('Account created successfully! Welcome.');
     } catch (err: any) {
